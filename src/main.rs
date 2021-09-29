@@ -1,4 +1,4 @@
-use yew::{classes, html, Component, ComponentLink, Html, ShouldRender};
+use yew::{classes, html, Component, ComponentLink, Html, ShouldRender, MouseEvent};
 
 pub struct App {
     link: ComponentLink<Self>,
@@ -17,8 +17,8 @@ pub enum OtherColor {
 }
 
 pub enum Actions {
-    AppClicked,
-    OtherClicked,
+    AppClicked(MouseEvent),
+    OtherClicked(MouseEvent),
 }
 
 impl Component for App {
@@ -35,17 +35,21 @@ impl Component for App {
 
     fn update(&mut self, msg: Self::Message) -> ShouldRender {
         match msg {
-            Actions::AppClicked => {
-                self.color = match self.color {
-                    Color::Pink => Color::Yellow,
-                    Color::Yellow => Color::Pink,
-                };
+            Actions::AppClicked(event) => {
+                if event.target() == event.current_target() {
+                    self.color = match self.color {
+                        Color::Pink => Color::Yellow,
+                        Color::Yellow => Color::Pink,
+                    };
+                }
             }
-            Actions::OtherClicked => {
-                self.other_color = match self.other_color {
-                    OtherColor::Green => OtherColor::Red,
-                    OtherColor::Red => OtherColor::Green,
-                };
+            Actions::OtherClicked(event) => {
+                if event.target() == event.current_target() {
+                    self.other_color = match self.other_color {
+                        OtherColor::Green => OtherColor::Red,
+                        OtherColor::Red => OtherColor::Green,
+                    };
+                }
             }
         }
         true
@@ -64,8 +68,8 @@ impl Component for App {
             OtherColor::Red => "red",
             OtherColor::Green => "green",
         };
-        let on_app_click = self.link.callback(|_| Actions::AppClicked);
-        let on_other_click = self.link.callback(|_| Actions::OtherClicked);
+        let on_app_click = self.link.callback(Actions::AppClicked);
+        let on_other_click = self.link.callback(Actions::OtherClicked);
         html! {
             <div onclick={ on_app_click } class=classes!("app", color)>
                 <span class="label">{"Main"}</span>
