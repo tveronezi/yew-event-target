@@ -68,7 +68,10 @@ impl Component for App {
         let on_other_click = self.link.callback(|_| Actions::OtherClicked);
         html! {
             <div onclick={ on_app_click } class=classes!("app", color)>
-                <div onclick={ on_other_click } class=classes!("other", other_color) />
+                <span class="label">{"Main"}</span>
+                <div onclick={ on_other_click } class=classes!("other", other_color)>
+                    <span>{"Other"}</span>
+                </div>
             </div>
         }
     }
